@@ -8,19 +8,45 @@ import ioc.dam.m6.exemples.gestiofitxers.TipusOrdre;
 public class GestioFitxersImpl implements GestioFitxers{
 	private Object[][] contingut;
 	private File carpetaDeTreball = null;
+	private int files=0;
+	private int columnes=3;
 	
 	public GestioFitxersImpl() {
 		carpetaDeTreball = File.listRoots()[0];
 		actualitza();
 	}
 	
+	
+	
 	private void actualitza() {
-
+		String[] fitxers = carpetaDeTreball.list();
+		files = fitxers.length / columnes;
+		if(files*columnes < fitxers.length) {
+			files++;
+		}
+	
+	contingut = new String[files][columnes];
+	
+	for(int i=0; i<columnes; i++) {
+		for(int j=0;j<files; j++) {
+			int index = j*columnes+i;
+			if(index<fitxers.length) {
+				contingut[j][i]=fitxers[index];
+			}else {
+				contingut[j][i]="";
+			}
+		}
 	}
+	
+}
+	
 
 	@Override
 	public void amunt() {
-		throw new UnsupportedOperationException("Not supported yet.");
+		if(carpetaDeTreball.getParentFile()!=null) {
+			carpetaDeTreball = carpetaDeTreball.getParentFile();
+			actualitza();
+		}
 		
 	}
 
@@ -40,8 +66,25 @@ public class GestioFitxersImpl implements GestioFitxers{
 	}
 
 	@Override
-	public void entraA(String arg0) throws GestioFitxersException {
-		throw new UnsupportedOperationException("Not supported yet.");		
+	public void entraA(String nomCarpeta) throws GestioFitxersException {
+
+		File file = new File(carpetaDeTreball, nomCarpeta);
+		//Controlar que el destí sigui una carpeta
+		if(!file.isDirectory()) {
+			throw new GestioFitxersException("Error. S'esperava "
+					+ "un directori, però"
+					+file.getAbsolutePath() + " no és un directori. ");
+		}
+		//Controlar els permisos de lectura de la carpeta
+		if(!file.canRead()) {
+			throw new GestioFitxersException("Alerta. No podeu accedir a "
+					+ file.getAbsolutePath() + ". No teniu prou permisos");
+		}
+		//Se li assigna la carpeta
+		carpetaDeTreball=file;
+		//Es requereix actualitzar el contingut
+		actualitza();
+		
 	}
 
 	@Override
@@ -64,20 +107,17 @@ public class GestioFitxersImpl implements GestioFitxers{
 
 	@Override
 	public String getAdrecaCarpeta() {
-		throw new UnsupportedOperationException("Not supported yet.");
-		//return null;
+		return carpetaDeTreball.getAbsolutePath();
 	}
 
 	@Override
 	public int getColumnes() {
-		throw new UnsupportedOperationException("Not supported yet.");
-		//return 0;
+		return columnes;
 	}
 
 	@Override
 	public Object[][] getContingut() {
-		throw new UnsupportedOperationException("Not supported yet.");
-		//return null;
+		return contingut;
 	}
 
 	@Override
@@ -94,8 +134,7 @@ public class GestioFitxersImpl implements GestioFitxers{
 
 	@Override
 	public int getFiles() {
-		throw new UnsupportedOperationException("Not supported yet.");
-		//return 0;
+		return files;
 	}
 
 	@Override
@@ -118,8 +157,7 @@ public class GestioFitxersImpl implements GestioFitxers{
 
 	@Override
 	public String getNomCarpeta() {
-		throw new UnsupportedOperationException("Not supported yet.");
-		//return null;
+		return carpetaDeTreball.getName();
 	}
 
 	@Override
@@ -158,13 +196,28 @@ public class GestioFitxersImpl implements GestioFitxers{
 	}
 
 	@Override
-	public void setAdrecaCarpeta(String arg0) throws GestioFitxersException {
-		throw new UnsupportedOperationException("Not supported yet.");		
-	}
+	public void setAdrecaCarpeta(String adreca) throws GestioFitxersException {
+			File file = new File(adreca);
+			//Controlar que el destí sigui una carpeta
+			if(!file.isDirectory()) {
+				throw new GestioFitxersException("Error. S'esperava "
+						+ "un directori, però"
+						+file.getAbsolutePath() + " no és un directori. ");
+			}
+			//Controlar els permisos de lectura de la carpeta
+			if(!file.canRead()) {
+				throw new GestioFitxersException("Alerta. No podeu accedir a "
+						+ file.getAbsolutePath() + ". No teniu prou permisos");
+			}
+			//Se li assigna la carpeta
+			carpetaDeTreball=file;
+			//Es requereix actualitzar el contingut
+			actualitza();
+		}
 
 	@Override
-	public void setColumnes(int arg0) {
-		throw new UnsupportedOperationException("Not supported yet.");		
+	public void setColumnes(int columnes) {
+		this.columnes = columnes;
 	}
 
 	@Override
@@ -179,32 +232,27 @@ public class GestioFitxersImpl implements GestioFitxers{
 
 	@Override
 	public void setEsPotLlegir(String arg0, boolean arg1) throws GestioFitxersException {
-		// TODO Auto-generated method stub
-		
+		throw new UnsupportedOperationException("Not supported yet.");		
 	}
 
 	@Override
 	public void setFormatContingut(FormatVistes arg0) {
-		// TODO Auto-generated method stub
-		
+		throw new UnsupportedOperationException("Not supported yet.");		
 	}
 
 	@Override
 	public void setMostrarOcults(boolean arg0) {
-		// TODO Auto-generated method stub
-		
+		throw new UnsupportedOperationException("Not supported yet.");		
 	}
 
 	@Override
 	public void setOrdenat(TipusOrdre arg0) {
-		// TODO Auto-generated method stub
-		
+		throw new UnsupportedOperationException("Not supported yet.");		
 	}
 
 	@Override
 	public void setUltimaModificacio(String arg0, long arg1) throws GestioFitxersException {
-		// TODO Auto-generated method stub
-		
+		throw new UnsupportedOperationException("Not supported yet.");		
 	}
 
 }
