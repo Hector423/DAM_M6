@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Date;
 
 import ioc.dam.m6.exemples.gestiofitxers.ByteFormat;
@@ -13,6 +14,10 @@ public class GestioFitxersImpl implements GestioFitxers{
 	private File carpetaDeTreball = null;
 	private int files=0;
 	private int columnes=3;
+	private TipusOrdre ordenat;
+	private boolean mostrarOcults;
+	private final FiltreFitxersOcults filtreFitxersOcults = new FiltreFitxersOcults();
+	
 	
 	public GestioFitxersImpl() {
 		carpetaDeTreball = File.listRoots()[0];
@@ -20,10 +25,18 @@ public class GestioFitxersImpl implements GestioFitxers{
 	}
 	
 	private void actualitza() {
-		String[] fitxers = carpetaDeTreball.list(new FiltreFitxersOcults());
+		String[] fitxers ;
+		if(mostrarOcults) {
+			fitxers = carpetaDeTreball.list();
+		}else {
+			fitxers = carpetaDeTreball.list(filtreFitxersOcults);
+		}
 		files = fitxers.length / columnes;
 		if(files*columnes < fitxers.length) {
 			files++;
+		}
+		if(ordenat==TipusOrdre.NOM) {
+			Arrays.sort(fitxers, String.CASE_INSENSITIVE_ORDER);
 		}
 	
 	contingut = new String[files][columnes];
@@ -213,8 +226,7 @@ public class GestioFitxersImpl implements GestioFitxers{
 
 	@Override
 	public boolean getMostrarOcults() {
-		throw new UnsupportedOperationException("Not supported yet.");
-		//return false;
+		return mostrarOcults;
 	}
 
 	@Override
@@ -224,8 +236,7 @@ public class GestioFitxersImpl implements GestioFitxers{
 
 	@Override
 	public TipusOrdre getOrdenat() {
-		throw new UnsupportedOperationException("Not supported yet.");
-		//return null;
+		return ordenat;
 	}
 
 	@Override
@@ -303,13 +314,14 @@ public class GestioFitxersImpl implements GestioFitxers{
 	}
 
 	@Override
-	public void setMostrarOcults(boolean arg0) {
-		throw new UnsupportedOperationException("Not supported yet.");		
+	public void setMostrarOcults(boolean ocults) {
+		this.mostrarOcults=ocults;
 	}
 
 	@Override
-	public void setOrdenat(TipusOrdre arg0) {
-		throw new UnsupportedOperationException("Not supported yet.");		
+	public void setOrdenat(TipusOrdre ordenat) {
+		this.ordenat=ordenat;
+		actualitza();
 	}
 
 	@Override
