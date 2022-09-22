@@ -4,12 +4,12 @@ import java.util.Scanner;
 public class Buscador {
 	
 	public static void main(String[] args) {
-	String entrada = "";
-	File carpeta = new File(entrada);
+	Scanner entradaEscanner = new Scanner(System.in);
 	
-	try (Scanner entradaEscanner = new Scanner (System.in)) {
-		entrada = entradaEscanner.nextLine();
-	}
+	System.out.println("Escriu la ruta:");
+	String entrada = entradaEscanner.nextLine();
+		
+	File carpeta = new File(entrada);
 	String[] llistat = carpeta.list();
 	
 	if(llistat == null) {
