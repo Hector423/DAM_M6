@@ -65,18 +65,67 @@ public class GestioFitxersImpl implements GestioFitxers{
 	}
 
 	@Override
-	public void creaCarpeta(String arg0) throws GestioFitxersException {
-		throw new UnsupportedOperationException("Not supported yet.");		
+	public void creaCarpeta(String nomCarpeta) throws GestioFitxersException {
+			File file = new File(carpetaDeTreball, nomCarpeta);
+			if(!carpetaDeTreball.canWrite()) {
+				throw new GestioFitxersException("Error. No s'ha pogut crear " 
+						+ nomCarpeta + "No teniu suficients permisos");
+			}
+			if(file.exists()) {
+				throw new GestioFitxersException("Error. No s'ha pogut crear " 
+						+ nomCarpeta + "Ja existeix un fitxer o carpeta amb el nom" + nomCarpeta);
+			}
+			if(!file.mkdir()) {
+				throw new GestioFitxersException("Error. No s'ha pogut crear " 
+						+ nomCarpeta + ".");
+			}
+			actualitza();
 	}
 
 	@Override
-	public void creaFitxer(String arg0) throws GestioFitxersException {
-		throw new UnsupportedOperationException("Not supported yet.");		
+	public void creaFitxer(String nomFitxer) throws GestioFitxersException {
+		File file = new File(carpetaDeTreball, nomFitxer);
+		if(!carpetaDeTreball.canWrite()) {
+			throw new GestioFitxersException("Error. No s'ha pogut crear " 
+					+ nomFitxer + "No teniu suficients permisos");
+		}
+		if(file.exists()) {
+			throw new GestioFitxersException("Error. No s'ha pogut crear " 
+					+ nomFitxer + "Ja existeix un fitxer o carpeta amb el nom" + nomFitxer);
+		}
+		try {
+		if(!file.createNewFile()) {
+			throw new GestioFitxersException("Error. No s'ha pogut crear " 
+					+ nomFitxer + ".");
+		}
+		}catch (IOException ex){
+			throw new GestioFitxersException("S'ha produit un error" 
+				+ "d'entrada o sortida: " + ex.getMessage() + "´", ex);
+		}
+		actualitza();
 	}
 
 	@Override
-	public void elimina(String arg0) throws GestioFitxersException {
-		throw new UnsupportedOperationException("Not supported yet.");		
+	public void elimina(String nom) throws GestioFitxersException {
+		File file = new File(carpetaDeTreball, nom);
+		if(!carpetaDeTreball.canWrite()) {
+			throw new GestioFitxersException("Error. No s'ha pogut eliminar " 
+					+ nom + "No teniu suficients permisos");
+		}
+		if(!file.exists()) {
+			throw new GestioFitxersException("Error. S'intenta eliminar " 
+					+ nom + "però no existeix");
+		}
+		if(!file.delete()) {
+			if(file.isDirectory() && file.list().length>0) {
+			throw new GestioFitxersException("Error. No s'ha pogut eliminar la carpeta " 
+					+ nom + "No està buida.");
+			}else {
+				throw new GestioFitxersException("Error. No s'ha pogut eliminar" 
+						+ nom + ".");
+			}
+		}
+		actualitza();
 	}
 
 	@Override
@@ -264,8 +313,22 @@ public class GestioFitxersImpl implements GestioFitxers{
 	}
 
 	@Override
-	public void reanomena(String arg0, String arg1) throws GestioFitxersException {
-		throw new UnsupportedOperationException("Not supported yet.");		
+	public void reanomena(String nom, String nomNou) throws GestioFitxersException {
+		File file = new File(carpetaDeTreball, nom);
+		File fileNou = new File(carpetaDeTreball, nomNou);
+		if(!carpetaDeTreball.canWrite()) {
+			throw new GestioFitxersException("Error. No s'ha pogut eliminar " 
+					+ nom + "No teniu suficients permisos");
+		}
+		if(!file.exists()) {
+			throw new GestioFitxersException("Error. No es pot fer el canvi de nom a " 
+					+ nom + "no existeix");
+		}
+		if(!file.renameTo(fileNou)){
+			throw new GestioFitxersException("Error. No s'ha pogut canviar el nom a " 
+					+ nom + ".");
+			}
+		actualitza();
 	}
 
 	@Override
@@ -325,8 +388,13 @@ public class GestioFitxersImpl implements GestioFitxers{
 	}
 
 	@Override
-	public void setUltimaModificacio(String arg0, long arg1) throws GestioFitxersException {
-		throw new UnsupportedOperationException("Not supported yet.");		
+	public void setUltimaModificacio(String nom, long dataHora) throws GestioFitxersException {
+		File file = new File(carpetaDeTreball, nom);
+		if(!file.exists()) {
+			throw new GestioFitxersException("Error. No es pot obtenir modificar " 
+					+ nom + "no existeix");
+		}
+		file.setLastModified(dataHora);
 	}
 
 }
