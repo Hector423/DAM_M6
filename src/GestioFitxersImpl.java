@@ -151,21 +151,29 @@ public class GestioFitxersImpl implements GestioFitxers{
 	}
 
 	@Override
-	public boolean esPotEscriure(String arg0) throws GestioFitxersException {
-		throw new UnsupportedOperationException("Not supported yet.");
-		//return false;
+	public boolean esPotEscriure(String nom) throws GestioFitxersException {
+		File file = new File(carpetaDeTreball, nom);
+		if(!file.exists()) {
+			throw new GestioFitxersException("Error. No es pot obtenir "
+					+ "informació de " + nom + ", no existeix.");
+		}
+		return file.canWrite();
 	}
 
 	@Override
-	public boolean esPotExecutar(String arg0) throws GestioFitxersException {
-		throw new UnsupportedOperationException("Not supported yet.");
-		//return false;
+	public boolean esPotExecutar(String nom) throws GestioFitxersException {
+		File file = new File(carpetaDeTreball, nom);
+		if(!file.exists()) {
+			throw new GestioFitxersException("Error. No es pot obtenir "
+					+ "informació de "+ nom + ", no existeix");
+		}
+		return file.canExecute();
 	}
 
 	@Override
-	public boolean esPotLlegir(String arg0) throws GestioFitxersException {
-		throw new UnsupportedOperationException("Not supported yet.");
-		//return false;
+	public boolean esPotLlegir(String nom) throws GestioFitxersException {
+		throw new UnsupportedOperationException("Not supported yet.");		
+		//return null
 	}
 
 	@Override
@@ -185,14 +193,14 @@ public class GestioFitxersImpl implements GestioFitxers{
 
 	@Override
 	public String getEspaiDisponibleCarpetaTreball() {
-		throw new UnsupportedOperationException("Not supported yet.");
-		//return null;
+		ByteFormat format = new ByteFormat("#,##0.00");
+		return format.format(carpetaDeTreball.getUsableSpace());
 	}
 
 	@Override
 	public String getEspaiTotalCarpetaTreball() {
-		throw new UnsupportedOperationException("Not supported yet.");
-		//return null;
+		ByteFormat format = new ByteFormat("#,##0.00");
+		return format.format(carpetaDeTreball.getTotalSpace());
 	}
 
 	@Override
@@ -301,15 +309,13 @@ public class GestioFitxersImpl implements GestioFitxers{
 	}
 
 	@Override
-	public String nomArrel(int arg0) {
-		throw new UnsupportedOperationException("Not supported yet.");
-		//return null;
+	public String nomArrel(int id) {
+		return File.listRoots()[id].toString();
 	}
 
 	@Override
 	public int numArrels() {
-		throw new UnsupportedOperationException("Not supported yet.");
-		//return 0;
+		return File.listRoots().length; 
 	}
 
 	@Override
@@ -357,19 +363,34 @@ public class GestioFitxersImpl implements GestioFitxers{
 	}
 
 	@Override
-	public void setEsPotEscriure(String arg0, boolean arg1) throws GestioFitxersException {
-		throw new UnsupportedOperationException("Not supported yet.");		
+	public void setEsPotEscriure(String nom, boolean permis) throws GestioFitxersException {
+			File file = new File (carpetaDeTreball, nom);
+			if(!file.exists()) {
+				throw new GestioFitxersException("Error. No es pot modificar"
+						+ nom + ", no existeix.");
+			}
+			file.setWritable(permis);
 	}
 
 	@Override
-	public void setEsPotExecutar(String arg0, boolean arg1) throws GestioFitxersException {
-		throw new UnsupportedOperationException("Not supported yet.");		
+	public void setEsPotExecutar(String nom, boolean permis) throws GestioFitxersException {
+		File file = new File (carpetaDeTreball, nom);
+		if(!file.exists()) {
+			throw new GestioFitxersException("Error. No es pot modificar"
+					+ nom + ", no existeix.");
+		}
+		file.setWritable(permis);
 	}
 
 	@Override
-	public void setEsPotLlegir(String arg0, boolean arg1) throws GestioFitxersException {
-		throw new UnsupportedOperationException("Not supported yet.");		
-	}
+	public void setEsPotLlegir(String nom, boolean permis) throws GestioFitxersException {
+		File file = new File(carpetaDeTreball, nom);
+		if(!file.exists()) {
+			throw new GestioFitxersException("Error. No es pot modificar "
+					+ nom + ", no existeix");
+		}
+		file.setReadable(permis);	
+		}
 
 	@Override
 	public void setFormatContingut(FormatVistes arg0) {
